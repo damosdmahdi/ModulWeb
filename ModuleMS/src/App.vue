@@ -1,17 +1,15 @@
 <script setup>
+// Impor komponen layout global
 import NavbarSection from './components/NavbarSection.vue'
-import SemesterSection from './components/SemesterSection.vue'
 import FooterSection from './components/FooterSection.vue'
 </script>
-
 <template>
-  <header></header>
-
-  <main>
+  <div class="bg-slate-50 min-h-screen font-sans flex flex-col">
     <NavbarSection />
-    <SemesterSection />
-    <FooterSection />
-  </main>
-</template>
 
-<style scoped></style>
+    <main class="flex-grow">
+      <router-view></router-view>
+    </main>
+    <FooterSection />
+  </div>
+</template>

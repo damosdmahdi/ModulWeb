@@ -1,7 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 
 import HomeView from '../views/HomeView.vue'
-import SemesterDetailView from '../views/SemesterDetailView.vue'
+import SemesterView from '../views/SemesterView.vue'
 
 const routes = [
   {
@@ -12,7 +12,7 @@ const routes = [
   {
     path: '/semester/:id',
     name: 'SemesterDetail',
-    component: SemesterDetailView,
+    component: SemesterView,
   },
 ]
 
