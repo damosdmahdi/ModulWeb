@@ -1,7 +1,6 @@
 <template>
   <main class="bg-slate-50 py-20 md:py-28">
     <div class="container mx-auto px-4 sm:px-6 lg:px-8">
-      <!-- Section Header -->
       <div class="text-center max-w-2xl mx-auto">
         <h2 class="text-4xl md:text-5xl font-extrabold text-slate-900 tracking-tight">
           Select Your Semester
@@ -12,9 +11,7 @@
         </p>
       </div>
 
-      <!-- Semester Cards Grid -->
       <div class="mt-16 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-        <!-- Setiap kartu sekarang adalah link (<a> tag) -->
         <a
           v-for="semester in semesters"
           :key="semester.id"
@@ -22,14 +19,13 @@
           class="block bg-white p-6 rounded-xl shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300 group"
         >
           <div class="flex justify-between items-start">
-            <!-- Nomor Semester dengan Latar Belakang Berwarna -->
             <div
               class="w-10 h-10 flex items-center justify-center rounded-lg font-bold text-white text-lg"
               :class="semester.color"
             >
               {{ semester.id }}
             </div>
-            <!-- Ikon Panah -->
+
             <svg
               class="w-6 h-6 text-slate-400 group-hover:text-slate-600 transition-colors"
               fill="none"
@@ -46,12 +42,9 @@
             </svg>
           </div>
           <div class="mt-4">
-            <!-- Judul semester tetap ada -->
             <h3 class="font-bold text-slate-800">Semester {{ semester.id }}</h3>
-            <!-- DESKRIPSI DIHILANGKAN DARI SINI -->
           </div>
           <div class="mt-6 flex items-center space-x-2 text-sm text-slate-500">
-            <!-- Ikon Buku/Mata Kuliah -->
             <svg
               class="w-4 h-4"
               fill="none"
@@ -77,8 +70,6 @@
 <script setup>
 import { ref } from 'vue'
 
-// Data untuk setiap kartu semester
-// Properti 'description' telah dihapus untuk menjaga data tetap bersih
 const semesters = ref([
   { id: 1, title: 'Foundation of Computer Science', courseCount: 8, color: 'bg-indigo-500' },
   { id: 2, title: 'Programming Fundamentals', courseCount: 7, color: 'bg-green-500' },
