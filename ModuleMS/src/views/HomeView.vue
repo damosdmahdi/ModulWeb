@@ -11,8 +11,30 @@
       </p>
     </section>
 
+    <!--Search Bar -->
+    <section class="mt-12 max-w-xl mx-auto">
+      <div class="relative">
+        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+          <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+            ></path>
+          </svg>
+        </div>
+        <input
+          v-model="searchQuery"
+          type="text"
+          placeholder="Cari mata kuliah..."
+          class="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-full leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+        />
+      </div>
+    </section>
+
     <!-- Filter Semester -->
-    <section class="mt-12 flex justify-center items-center space-x-2 sm:space-x-4">
+    <section class="mt-8 flex justify-center items-center space-x-2 sm:space-x-4">
       <button
         @click="filterBySemester(0)"
         :class="
@@ -91,7 +113,7 @@
         </router-link>
       </div>
       <div v-else class="text-center mt-10 text-slate-500">
-        <p>Tidak ada mata kuliah untuk semester yang dipilih.</p>
+        <p>Tidak ada mata kuliah yang cocok dengan pencarian Anda.</p>
       </div>
     </section>
   </div>
@@ -103,6 +125,7 @@ import { ref, onMounted, computed } from 'vue'
 const allCourses = ref([])
 const isLoading = ref(true)
 const activeSemester = ref(0) // 0 untuk "Semua"
+const searchQuery = ref('') // State baru untuk search bar
 
 // Ambil data semua mata kuliah dari API
 async function fetchAllCourses() {
@@ -135,11 +158,27 @@ const availableSemesters = computed(() => {
   return [...new Set(semesters)].sort((a, b) => a - b)
 })
 
-// Menyaring daftar mata kuliah berdasarkan filter yang aktif
+// LOGIKA BARU: Menyaring daftar mata kuliah berdasarkan KEDUANYA (semester dan pencarian)
 const filteredCourses = computed(() => {
+  let coursesBySemester = []
+
+  // 1. Filter berdasarkan semester terlebih dahulu
   if (activeSemester.value === 0) {
-    return allCourses.value // Tampilkan semua jika filter "Semua" aktif
+    coursesBySemester = allCourses.value
+  } else {
+    coursesBySemester = allCourses.value.filter(
+      (course) => course.semester === activeSemester.value,
+    )
   }
-  return allCourses.value.filter((course) => course.semester === activeSemester.value)
+
+  // 2. Jika ada teks pencarian, filter lagi hasilnya
+  if (searchQuery.value.trim() !== '') {
+    return coursesBySemester.filter((course) =>
+      course.title.toLowerCase().includes(searchQuery.value.toLowerCase()),
+    )
+  }
+
+  // Jika tidak ada teks pencarian, kembalikan hasil filter semester
+  return coursesBySemester
 })
 </script>
