@@ -1,6 +1,6 @@
 <template>
   <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
-    <!-- Header Halaman Utama -->
+    <!-- Header Halaman Utama-->
     <section class="text-center max-w-2xl mx-auto">
       <h2 class="text-4xl md:text-5xl font-extrabold text-slate-900 tracking-tight">
         Mata Kuliah Tersedia
@@ -11,7 +11,7 @@
       </p>
     </section>
 
-    <!--Search Bar -->
+    <!-- Search Bar -->
     <section class="mt-12 max-w-xl mx-auto">
       <div class="relative">
         <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -33,35 +33,37 @@
       </div>
     </section>
 
-    <!-- Filter Semester -->
-    <section class="mt-8 flex justify-center items-center space-x-2 sm:space-x-4">
-      <button
-        @click="filterBySemester(0)"
-        :class="
-          activeSemester === 0
-            ? 'bg-indigo-600 text-white'
-            : 'bg-white text-slate-700 hover:bg-slate-100'
-        "
-        class="px-4 py-2 rounded-full font-semibold transition-colors text-sm sm:text-base"
-      >
-        Semua
-      </button>
-      <button
-        v-for="semester in availableSemesters"
-        :key="semester"
-        @click="filterBySemester(semester)"
-        :class="
-          activeSemester === semester
-            ? 'bg-indigo-600 text-white'
-            : 'bg-white text-slate-700 hover:bg-slate-100'
-        "
-        class="px-4 py-2 rounded-full font-semibold transition-colors text-sm sm:text-base"
-      >
-        Semester {{ semester }}
-      </button>
+    <!-- Filter Semester-->
+    <section class="mt-8">
+      <div class="flex items-center space-x-2 sm:space-x-4 overflow-x-auto pb-4 scrollbar-hide">
+        <button
+          @click="filterBySemester(0)"
+          :class="
+            activeSemester === 0
+              ? 'bg-indigo-600 text-white'
+              : 'bg-white text-slate-700 hover:bg-slate-100'
+          "
+          class="px-4 py-2 rounded-full font-semibold transition-colors text-sm sm:text-base flex-shrink-0"
+        >
+          Semua
+        </button>
+        <button
+          v-for="semester in availableSemesters"
+          :key="semester"
+          @click="filterBySemester(semester)"
+          :class="
+            activeSemester === semester
+              ? 'bg-indigo-600 text-white'
+              : 'bg-white text-slate-700 hover:bg-slate-100'
+          "
+          class="px-4 py-2 rounded-full font-semibold transition-colors text-sm sm:text-base flex-shrink-0"
+        >
+          Semester {{ semester }}
+        </button>
+      </div>
     </section>
 
-    <!-- Daftar Kartu Mata Kuliah -->
+    <!-- Daftar Kartu Mata Kuliah-->
     <section class="mt-10">
       <div v-if="isLoading" class="text-center py-10">
         <p class="text-slate-600">Memuat data mata kuliah dari Google Drive...</p>
@@ -70,7 +72,6 @@
         v-else-if="filteredCourses.length > 0"
         class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8"
       >
-        <!-- Setiap kartu sekarang mengarah ke /course/:id -->
         <router-link
           v-for="course in filteredCourses"
           :key="course.id"
@@ -120,19 +121,17 @@
 </template>
 
 <script setup>
+// Bagian <script> tidak perlu diubah sama sekali JANGAN by Adri
 import { ref, onMounted, computed } from 'vue'
 
 const allCourses = ref([])
 const isLoading = ref(true)
-const activeSemester = ref(0) // 0 untuk "Semua"
-const searchQuery = ref('') // State baru untuk search bar
+const activeSemester = ref(0)
+const searchQuery = ref('')
 
-// Ambil data semua mata kuliah dari API
 async function fetchAllCourses() {
-  // GANTI DENGAN URL WEB APP ANDA YANG BARU
   const apiUrl =
-    'https://script.google.com/macros/s/AKfycbwRjlb2drYEagj2XWdIAGV9GEm7SKIjDczn-Nwgxs8nS79pucKoD9NXpNBby87AJ0eL/exec' // Memanggil API dalam "Mode 1" (tanpa parameter)
-
+    'https://script.googleusercontent.com/macros/echo?user_content_key=AehSKLhNcfvUH_JYRAMs228_dLvUSPplNJx8YntTUvhc47fTQh-ju_qh3daxKtgXnErDNmpGNsy7y5eoGt2LTwVRBUGFbd5XzSftGc9BuwgUokdRV7aW2PqWpmYmaGObOkAeJCL-BCDhJmmD6J3bDfo-eSbJ6vscTj9e8gl8PCc7iw0YE3GNeVKMmxIRhD7O6qzoRAi3YQfKrayyTcjY7XKkiw9iWzOPx8kwr-9wCxezxzZLll4WxqKnWlnGLxeDAbiPqF9XXGWtLlZnuazBIrKhF8gx8rYy-Q&lib=MTTIVDwz9uTbOcxgK8-BbKRpcabFoEc7r'
   try {
     const response = await fetch(apiUrl)
     const data = await response.json()
@@ -147,22 +146,17 @@ async function fetchAllCourses() {
 
 onMounted(fetchAllCourses)
 
-// Fungsi untuk mengubah filter aktif
 function filterBySemester(semesterNumber) {
   activeSemester.value = semesterNumber
 }
 
-// Membuat daftar semester yang unik untuk tombol filter, secara dinamis
 const availableSemesters = computed(() => {
   const semesters = allCourses.value.map((course) => course.semester)
   return [...new Set(semesters)].sort((a, b) => a - b)
 })
 
-// LOGIKA BARU: Menyaring daftar mata kuliah berdasarkan KEDUANYA (semester dan pencarian)
 const filteredCourses = computed(() => {
   let coursesBySemester = []
-
-  // 1. Filter berdasarkan semester terlebih dahulu
   if (activeSemester.value === 0) {
     coursesBySemester = allCourses.value
   } else {
@@ -170,15 +164,22 @@ const filteredCourses = computed(() => {
       (course) => course.semester === activeSemester.value,
     )
   }
-
-  // 2. Jika ada teks pencarian, filter lagi hasilnya
   if (searchQuery.value.trim() !== '') {
     return coursesBySemester.filter((course) =>
       course.title.toLowerCase().includes(searchQuery.value.toLowerCase()),
     )
   }
-
-  // Jika tidak ada teks pencarian, kembalikan hasil filter semester
   return coursesBySemester
 })
 </script>
+
+<style>
+/* Menambahkan utility untuk menyembunyikan scrollbar agar terlihat lebih rapi */
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+.scrollbar-hide {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+</style>
